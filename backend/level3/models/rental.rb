@@ -15,11 +15,19 @@ class Rental
   end
 
   def price
-    time_price + distance_price
+    @price ||= time_price + distance_price
   end
 
   def days
     @days ||= (end_date - start_date + 1).to_i
+  end
+
+  def commission
+    {
+      "insurance_fee" => insurance_fee,
+      "assistance_fee" => assistance_fee,
+      "drivy_fee" => drivy_fee
+    }
   end
 
   private
@@ -35,5 +43,21 @@ class Rental
 
   def distance_price
     distance * car.price_per_km
+  end
+
+  def insurance_fee
+    total_fee * 0.5
+  end
+
+  def assistance_fee
+    days * 100
+  end
+
+  def drivy_fee
+    total_fee - insurance_fee - assistance_fee
+  end
+
+  def total_fee
+    price * 0.3
   end
 end
